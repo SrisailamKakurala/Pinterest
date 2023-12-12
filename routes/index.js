@@ -3,10 +3,11 @@ var router = express.Router();
 const userModel = require('./users');
 const postModel = require('./post');
 const passport = require('passport');
-const localStrategy =  require('passport-local');
+const localStrategy =  require('passport-local'); // returns local strategy constructor
 const upload = require('./multer');
 const post = require('./post');
 
+// authenticate user details with comparision to credentials in db
 passport.use(new localStrategy(userModel.authenticate()))
 
 /* GET home page. */
@@ -55,6 +56,7 @@ router.post('/createpost', isLoggedIn, upload.single("postimage"), async functio
   res.redirect('/profile');
 });
 
+// for uploading profile pic
 router.post('/fileupload', isLoggedIn, upload.single("image"), async function(req, res, next) {
   const user = await userModel.findOne({username: req.session.passport.user});
   user.profileImage = req.file.filename;
